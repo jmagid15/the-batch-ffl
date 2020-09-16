@@ -1,7 +1,8 @@
 const axios = require('axios');
+const utils = require('./utils');
 
 module.exports = (app) => {
-  app.get('/api/teams/:teamID', async (req, res) => {
+  app.get('/api/sheets/teams/:teamID', async (req, res) => {
     console.log('hitting teams endpoint');
     try {
       const rsp = await axios.get(
@@ -11,5 +12,9 @@ module.exports = (app) => {
     } catch (err) {
       console.error(err);
     }
+  });
+
+  app.get('/api/teams', async (req, res) => {
+    res.send(await utils.getTeams());
   });
 };
