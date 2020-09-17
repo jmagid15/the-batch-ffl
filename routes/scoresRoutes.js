@@ -15,7 +15,7 @@ async function getTopScorers(wk) {
       wk = rsp.data.scoringPeriodId;
     }
 
-    const scores = {};
+    var scores = {};
     for (i in schedule) {
       if (wk == schedule[i].matchupPeriodId) {
         console.log('woo ' + teamMap[schedule[i].away.teamId]);
@@ -31,10 +31,27 @@ async function getTopScorers(wk) {
       }
     }
 
+    // Sort the scores
+    const sortedScoresArray = [];
+    for (i in scores) {
+      sortedScoresArray.push(scores[i]);
+    }
+    sortedScoresArray.sort(compare);
+    scores = {};
+    for (i in sortedScoresArray) {
+      scores[i] = sortedScoresArray[i];
+    }
     return scores;
   } catch (err) {
     console.error(err);
   }
+}
+
+function compare(a, b) {
+  if (b['Points'] > a['Points']) return 1;
+  if (a['Points'] > b['Points']) return -1;
+
+  return 0;
 }
 
 module.exports = (app) => {
