@@ -16,7 +16,7 @@ class App extends React.Component {
   componentDidMount() {
     this.getScores();
     this.getStandings();
-    // this.timer = setInterval(() => this.getScores(), 10000);
+    this.timer = setInterval(() => this.getScores(), 10000);
   }
 
   componentWillUnmount() {
