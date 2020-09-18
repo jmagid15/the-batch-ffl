@@ -8,6 +8,7 @@ app.get('/home', (req, res) => {
 
 require('./routes/teamsRoutes')(app);
 require('./routes/scoresRoutes')(app);
+require('./routes/standingsRoutes')(app);
 
 if (process.env.NODE_ENV === 'production') {
   // Express will serve up production assets

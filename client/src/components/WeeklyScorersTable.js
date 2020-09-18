@@ -2,7 +2,7 @@ import React from 'react';
 
 const WeeklyScorersTable = ({ score }) => {
   return (
-    <table>
+    <table className="bp3-html-table weeklyScore">
       <thead>
         <tr>
           <th>Team</th>
@@ -14,8 +14,8 @@ const WeeklyScorersTable = ({ score }) => {
           score.map((s, index) => {
             return (
               <tr key={index}>
-                <td>{s.Team}</td>
-                <td>{s.Points}</td>
+                <td>{s.team}</td>
+                <td>{s.points}</td>
               </tr>
             );
           })
