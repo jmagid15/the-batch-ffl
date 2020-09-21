@@ -4,7 +4,6 @@ const utils = require('./utils');
 module.exports = (app) => {
   app.get('/api/topscorers', async (req, res) => {
     // Top Scorers for current week
-    console.log('top scorers for current week');
     res.send(await utils.getTopScorers(0));
   });
 

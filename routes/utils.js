@@ -2,7 +2,6 @@ const axios = require('axios');
 const e = require('express');
 
 async function getTeams() {
-  console.log('Getting teams');
   try {
     const rsp = await axios.get(
       'http://fantasy.espn.com/apis/v3/games/ffl/seasons/2020/segments/0/leagues/319300?view=mTeam'
@@ -24,7 +23,6 @@ async function getTeams() {
 }
 
 async function getTopScorers(wk) {
-  console.log('Getting top scorers');
   const teamMap = await getTeams();
   try {
     const rsp = await axios.get(
@@ -112,7 +110,6 @@ function compareRecords(a, b) {
 }
 
 async function getCurrentStandings() {
-  console.log('Getting current standings');
   const teamMap = await getTeams();
   try {
     // 1. for each week up to scoringPeriodId, compute pts winners and losers. add them to teamMap
@@ -161,10 +158,6 @@ async function getCurrentStandings() {
       sortedRecordArray.push(teamStandings[i]);
     }
     sortedRecordArray.sort(compareRecords);
-    // scores = {};
-    // for (i in sortedScoresArray) {
-    //   scores[i] = sortedScoresArray[i];
-    // }
 
     return sortedRecordArray;
   } catch (err) {
