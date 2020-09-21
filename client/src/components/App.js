@@ -38,7 +38,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="bp3-dark dark-container">
         <div className="page-header">
           <H1>The Batch 2020</H1>
           <H4>Fantasy Football Dashboard</H4>
