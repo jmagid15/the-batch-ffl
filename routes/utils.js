@@ -13,7 +13,7 @@ async function getTeams() {
         name: teams[i].location + ' ' + teams[i].nickname,
         h2hwins: teams[i].record.overall.wins,
         h2hlosses: teams[i].record.overall.losses,
-        seasonPoints: teams[i].record.overall.pointsFor,
+        seasonPoints: teams[i].record.overall.pointsFor.toFixed(2),
       };
     }
     return teamMap;
