@@ -1,5 +1,5 @@
 const axios = require('axios');
-const e = require('express');
+const express = require('express');
 
 async function getTeams() {
   try {
@@ -130,10 +130,7 @@ async function getCurrentStandings() {
       };
     }
     for (var i = 1; i < currentWeek; i++) {
-      console.log('i= ' + i + ' currwk = ' + currentWeek);
       var weeklyScores = await getTopScorers(i);
-      console.log(weeklyScores);
-      console.log(Object.keys(weeklyScores).length);
       for (var j = 0; j < Object.keys(weeklyScores).length; j++) {
         if (j < winnerCutoff) {
           ptsRecordMap[weeklyScores[j].id].ptswins += 1;
@@ -141,7 +138,6 @@ async function getCurrentStandings() {
           ptsRecordMap[weeklyScores[j].id].ptslosses += 1;
         }
       }
-      console.log('hi');
     }
 
     // Sum points W/L with H2H W/L
