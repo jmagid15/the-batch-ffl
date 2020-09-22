@@ -129,15 +129,19 @@ async function getCurrentStandings() {
         ptslosses: 0,
       };
     }
-    for (i = 1; i < currentWeek; i++) {
-      const weeklyScores = await getTopScorers(i);
-      for (j = 0; j < Object.keys(weeklyScores).length; j++) {
+    for (var i = 1; i < currentWeek; i++) {
+      console.log('i= ' + i + ' currwk = ' + currentWeek);
+      var weeklyScores = await getTopScorers(i);
+      console.log(weeklyScores);
+      console.log(Object.keys(weeklyScores).length);
+      for (var j = 0; j < Object.keys(weeklyScores).length; j++) {
         if (j < winnerCutoff) {
           ptsRecordMap[weeklyScores[j].id].ptswins += 1;
         } else {
           ptsRecordMap[weeklyScores[j].id].ptslosses += 1;
         }
       }
+      console.log('hi');
     }
 
     // Sum points W/L with H2H W/L
