@@ -31,14 +31,20 @@
   height: 100%;
   left: 0;
   top: 0;
+  overflow-y: auto;
 }
 
 .report-view {
   display: flex;
   justify-content: center;
+  margin: 0 100px;
+}
+
+.report-author {
+  padding: 10px;
 }
 
 .report-doc {
-  width: 70vw;
   font-size: large;
+  margin: 0 15px;
 }
