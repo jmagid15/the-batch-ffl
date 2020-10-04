@@ -6,6 +6,30 @@
   border-bottom: 3px solid rgb(0, 255, 64);
 }
 
+@media screen and (max-width: 620px) {
+  .report-nav,
+  .report-doc {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+  }
+  .report-view,
+  .scoreboard-container {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
 .page-header {
   display: flex;
   flex-direction: column;
@@ -22,6 +46,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 25px;
 }
 
 .dark-container {
@@ -37,14 +62,25 @@
 .report-view {
   display: flex;
   justify-content: center;
-  margin: 0 100px;
+  margin: 0 30px;
 }
 
-.report-author {
-  padding: 10px;
+.report-nav {
+  margin: 15px;
+  max-width: 200px;
 }
 
 .report-doc {
   font-size: large;
   margin: 0 15px;
+  flex: 1;
+}
+
+.tabs-container {
+  margin: 0 0 40px 0;
+}
+
+.tab-item {
+  outline: none;
+  box-shadow: none;
 }

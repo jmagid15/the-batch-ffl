@@ -5,10 +5,6 @@ import LeagueStandings from './LeagueStandings';
 import { H1, H3, H4 } from '@blueprintjs/core';
 
 class Home extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <div>
