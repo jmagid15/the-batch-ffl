@@ -123,7 +123,7 @@ async function getCurrentStandings() {
       'https://fantasy.espn.com/apis/v3/games/ffl/seasons/2020/segments/0/leagues/319300?view=mMatchupScore'
     );
     const currentWeek = rsp.data.scoringPeriodId;
-    const regSeasonCutoffWeek = 13;
+    const regSeasonCutoffWeek = 14;
     const winnerCutoff = 5;
 
     // Initialize ptsRecordMap
