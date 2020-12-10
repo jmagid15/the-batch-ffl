@@ -4,7 +4,7 @@ const express = require('express');
 async function getTeams() {
   try {
     const rsp = await axios.get(
-      'http://fantasy.espn.com/apis/v3/games/ffl/seasons/2020/segments/0/leagues/319300?view=mTeam'
+      'https://fantasy.espn.com/apis/v3/games/ffl/seasons/2020/segments/0/leagues/319300?view=mTeam'
     );
     const teamMap = {};
     const teams = rsp.data.teams;
@@ -26,16 +26,20 @@ async function getTopScorers(wk) {
   const teamMap = await getTeams();
   try {
     const rsp = await axios.get(
-      'http://fantasy.espn.com/apis/v3/games/ffl/seasons/2020/segments/0/leagues/319300?view=mMatchupScore'
+      'https://fantasy.espn.com/apis/v3/games/ffl/seasons/2020/segments/0/leagues/319300?view=mMatchupScore'
     );
-    const schedule = rsp.data.schedule;
+    const schedule = rsp.data.schedule.slice(0, 13*5);
 
-    // Set week to current scoring period if 0
+    // Set week to current scoring period if 0, or last week of regular season (13)
     var liveFlag = false;
     if (wk == rsp.data.scoringPeriodId) {
+      // If wk !=0 this is a deliberate request to the topscorers/:week endpoint
       liveFlag = true;
-    }
-    if (wk == 0) {
+    } else if (wk == 0 && rsp.data.scoringPeriodId > 13) {
+      // End of regular season - show week 13
+      wk = 13;
+    } else if (wk == 0) {
+      // Live during regular season
       wk = rsp.data.scoringPeriodId;
       liveFlag = true;
     }
@@ -116,9 +120,10 @@ async function getCurrentStandings() {
     // 2. sum pts W/L with h2h W/L
     // 3. sort
     const rsp = await axios.get(
-      'http://fantasy.espn.com/apis/v3/games/ffl/seasons/2020/segments/0/leagues/319300?view=mMatchupScore'
+      'https://fantasy.espn.com/apis/v3/games/ffl/seasons/2020/segments/0/leagues/319300?view=mMatchupScore'
     );
     const currentWeek = rsp.data.scoringPeriodId;
+    const regSeasonCutoffWeek = 13;
     const winnerCutoff = 5;
 
     // Initialize ptsRecordMap
@@ -129,7 +134,7 @@ async function getCurrentStandings() {
         ptslosses: 0,
       };
     }
-    for (var i = 1; i < currentWeek; i++) {
+    for (var i = 1; i < Math.min(regSeasonCutoffWeek, currentWeek); i++) {
       var weeklyScores = await getTopScorers(i);
       for (var j = 0; j < Object.keys(weeklyScores).length; j++) {
         if (j < winnerCutoff) {
