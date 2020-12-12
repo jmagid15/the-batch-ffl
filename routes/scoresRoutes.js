@@ -17,4 +17,8 @@ module.exports = (app) => {
     const scores = await utils.getTopScorers(req.params.week);
     res.send(utils.convertToCSV(scores));
   });
+
+  app.get('/api/currentweek', async (req, res) => {
+    res.send(await utils.getCurrentWeek());
+  })
 };

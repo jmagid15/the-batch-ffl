@@ -1,22 +1,59 @@
 import React from 'react';
-
+import axios from 'axios';
 import WeeklyScorersTable from './WeeklyScorersTable';
 import LeagueStandings from './LeagueStandings';
-import { H1, H3, H4 } from '@blueprintjs/core';
+import { H1, H3, H4, Popover, Menu, MenuItem, Button, Position } from '@blueprintjs/core';
 
 class Home extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedWeek: 0,
+      maxWeek: 0
+    }
+  }
+  
+  componentDidMount() {
+    this.getWeek();
+  }
+
+  getWeek = async () => {
+    const res = await axios.get('/api/currentweek/');
+    this.setState({
+      selectedWeek: res.data.week,
+      maxWeek: res.data.week
+    });
+  }
+
+  handleClick = (idx) => {
+    this.setState({ selectedWeek: idx })
+  }
+
   render() {
+    const weekList = Array.from({length: this.state.maxWeek}, (_, i) => i + 1);
+
+    const weekMenu = (
+      <Menu>
+        {weekList.map((name, index) => {
+          return <MenuItem key={name} text={`Week ${name}`} onClick={() => {this.handleClick(name)}}/>;
+        })}
+      </Menu>
+    )
+
     return (
       <div>
         <div className="page-header">
           <H1>The Batch 2020</H1>
           <H4>Fantasy Football Dashboard</H4>
+          <Popover content={weekMenu} position={Position.TOP} modifiers={{preventOverflow:{enabled: true}}}>
+              <Button text={`Week  ${this.state.selectedWeek}`} icon="calendar" />
+          </Popover>
         </div>
         <div className="scoreboard-container">
           <div className="table-container">
             <H3>Weekly Top Scorers</H3>
             <i>Updates every 10s</i>
-            <WeeklyScorersTable />
+            <WeeklyScorersTable week={this.state.selectedWeek} scoresList={[]}/>
           </div>
           <div className="table-container">
             <H3>League Standings</H3>

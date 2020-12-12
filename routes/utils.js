@@ -182,7 +182,20 @@ function convertToCSV(jsonData) {
   return csvData;
 }
 
+async function getCurrentWeek() {
+  const rsp = await axios.get(
+    'https://fantasy.espn.com/apis/v3/games/ffl/seasons/2020/segments/0/leagues/319300'
+  );
+  const currentWeek = rsp.data.scoringPeriodId;
+  const maxWeek = 13;
+  res = {
+    week: Math.min(currentWeek, maxWeek)
+  };
+  return res;
+}
+
 exports.getTeams = getTeams;
 exports.getTopScorers = getTopScorers;
 exports.getCurrentStandings = getCurrentStandings;
 exports.convertToCSV = convertToCSV;
+exports.getCurrentWeek = getCurrentWeek;

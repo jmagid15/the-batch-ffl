@@ -10,8 +10,8 @@ class WeeklyScorersTable extends React.Component {
   }
 
   componentDidMount() {
-    this.getScores();
-    this.timer = setInterval(() => this.getScores(), 10000);
+    this.getScores(this.props.week);
+    this.timer = setInterval(() => this.getScores(this.props.week), 10000);
   }
 
   componentWillUnmount() {
@@ -19,11 +19,17 @@ class WeeklyScorersTable extends React.Component {
     this.timer = null;
   }
 
-  getScores = async () => {
-    const scores = await axios.get('/api/topscorers/');
+  getScores = async (wk) => {
+    const scores = await axios.get('/api/topscorers/' + wk);
     const scoresList = Object.values(scores.data);
     this.setState({ scoresList: scoresList });
   };
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.scoresList !== this.props.scoresList) {
+      this.setState({ scoresList: this.props.scoresList });
+    }
+  }
 
   render() {
     return (
