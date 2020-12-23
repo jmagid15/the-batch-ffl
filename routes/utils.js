@@ -22,54 +22,67 @@ async function getTeams() {
   }
 }
 
+
+function enterScores(scores, scheduleEntry, teamMap, liveFlag) {
+  // Accounting for bye games first week of playoffs
+  if ("away" in scheduleEntry) {
+    if (liveFlag) {
+      scores[scheduleEntry.away.teamId] = {
+        team: teamMap[scheduleEntry.away.teamId].name,
+        points: scheduleEntry.away.totalPointsLive.toFixed(2),
+        id: scheduleEntry.away.teamId,
+      };
+    } else {
+      scores[scheduleEntry.away.teamId] = {
+        team: teamMap[scheduleEntry.away.teamId].name,
+        points: scheduleEntry.away.totalPoints.toFixed(2),
+        id: scheduleEntry.away.teamId,
+      };
+    }
+  }
+  if ("home" in scheduleEntry) {
+    if (liveFlag) {
+      scores[scheduleEntry.home.teamId] = {
+        team: teamMap[scheduleEntry.home.teamId].name,
+        points: scheduleEntry.home.totalPointsLive.toFixed(2),
+        id: scheduleEntry.home.teamId,
+      };
+    } else {
+      scores[scheduleEntry.home.teamId] = {
+        team: teamMap[scheduleEntry.home.teamId].name,
+        points: scheduleEntry.home.totalPoints.toFixed(2),
+        id: scheduleEntry.home.teamId,
+      };
+    }
+  }
+
+  return scores;
+}
+
+
 async function getTopScorers(wk) {
   const teamMap = await getTeams();
   try {
     const rsp = await axios.get(
       'https://fantasy.espn.com/apis/v3/games/ffl/seasons/2020/segments/0/leagues/319300?view=mMatchupScore'
     );
-    const schedule = rsp.data.schedule.slice(0, 13*5);
+    const schedule = rsp.data.schedule;
 
     // Set week to current scoring period if 0, or last week of regular season (13)
     var liveFlag = false;
     if (wk == rsp.data.scoringPeriodId) {
-      // If wk !=0 this is a deliberate request to the topscorers/:week endpoint
       liveFlag = true;
-    } else if (wk == 0 && rsp.data.scoringPeriodId > 13) {
-      // End of regular season - show week 13
-      wk = 13;
     } else if (wk == 0) {
-      // Live during regular season
+      // Set to current week
       wk = rsp.data.scoringPeriodId;
       liveFlag = true;
     }
 
+    // Populate scores from specified week
     var scores = {};
     for (i in schedule) {
-      if (wk == schedule[i].matchupPeriodId) {
-        if (liveFlag) {
-          scores[schedule[i].away.teamId] = {
-            team: teamMap[schedule[i].away.teamId].name,
-            points: schedule[i].away.totalPointsLive,
-            id: schedule[i].away.teamId,
-          };
-          scores[schedule[i].home.teamId] = {
-            team: teamMap[schedule[i].home.teamId].name,
-            points: schedule[i].home.totalPointsLive,
-            id: schedule[i].home.teamId,
-          };
-        } else {
-          scores[schedule[i].away.teamId] = {
-            team: teamMap[schedule[i].away.teamId].name,
-            points: schedule[i].away.totalPoints,
-            id: schedule[i].away.teamId,
-          };
-          scores[schedule[i].home.teamId] = {
-            team: teamMap[schedule[i].home.teamId].name,
-            points: schedule[i].home.totalPoints,
-            id: schedule[i].home.teamId,
-          };
-        }
+      if (schedule[i].matchupPeriodId == wk) {
+        scores = enterScores(scores, schedule[i], teamMap, liveFlag);
       }
     }
 
@@ -189,7 +202,7 @@ async function getCurrentWeek() {
   const currentWeek = rsp.data.scoringPeriodId;
   const maxWeek = 13;
   res = {
-    week: Math.min(currentWeek, maxWeek)
+    week: currentWeek //Math.min(currentWeek, maxWeek)
   };
   return res;
 }
