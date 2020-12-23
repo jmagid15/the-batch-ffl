@@ -56,7 +56,7 @@ class Home extends React.Component {
             <WeeklyScorersTable week={this.state.selectedWeek} scoresList={[]}/>
           </div>
           <div className="table-container">
-            <H3>League Standings</H3>
+            <H3>Regular Season Standings</H3>
             <i>Updates after each week</i>
             <LeagueStandings />
           </div>
