@@ -103,8 +103,8 @@ async function getTopScorers(wk) {
 }
 
 function comparePoints(a, b) {
-  if (b['points'] > a['points']) return 1;
-  if (a['points'] > b['points']) return -1;
+  if (parseInt(b['points']) > parseInt(a['points'])) return 1;
+  if (parseInt(a['points']) > parseInt(b['points'])) return -1;
 
   return 0;
 }
@@ -200,9 +200,10 @@ async function getCurrentWeek() {
     'https://fantasy.espn.com/apis/v3/games/ffl/seasons/2020/segments/0/leagues/319300'
   );
   const currentWeek = rsp.data.scoringPeriodId;
-  const maxWeek = 13;
+  const maxWeek = 16;
   res = {
-    week: currentWeek //Math.min(currentWeek, maxWeek)
+    week: currentWeek,
+    maxWeek: maxWeek
   };
   return res;
 }

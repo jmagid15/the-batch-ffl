@@ -19,10 +19,14 @@ class Home extends React.Component {
 
   getWeek = async () => {
     const res = await axios.get('/api/currentweek/');
-    this.setState({
-      selectedWeek: res.data.week,
-      maxWeek: res.data.week
-    });
+    let selectedWeek = res.data.week;
+    let maxWeek = res.data.maxWeek;
+
+    if (selectedWeek > maxWeek) {
+      selectedWeek = maxWeek;
+    }
+
+    this.setState({ selectedWeek, maxWeek });
   }
 
   handleClick = (idx) => {
@@ -31,6 +35,7 @@ class Home extends React.Component {
 
   render() {
     const weekList = Array.from({length: this.state.maxWeek}, (_, i) => i + 1);
+    console.log(weekList);
 
     const weekMenu = (
       <Menu>
