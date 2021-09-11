@@ -44,7 +44,7 @@ class App extends React.Component {
             </Navbar.Group>
             <Navbar.Group align={Alignment.RIGHT}>
               <Popover content={seasonMenu} position={Position.TOP} modifiers={{ preventOverflow: { enabled: true } }}>
-                <Button className="bp3-minimal" icon="menu" text={`${this.state.selectedSeason} Season`} />
+                <Button className="bp3-minimal" icon="menu" text="Season" />
               </Popover>
             </Navbar.Group>
           </Navbar>
