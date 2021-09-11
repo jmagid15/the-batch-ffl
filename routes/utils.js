@@ -1,10 +1,10 @@
 const axios = require('axios');
 const express = require('express');
 
-async function getTeams() {
+async function getTeams(season) {
   try {
     const rsp = await axios.get(
-      'https://fantasy.espn.com/apis/v3/games/ffl/seasons/2020/segments/0/leagues/319300?view=mTeam'
+      `https://fantasy.espn.com/apis/v3/games/ffl/seasons/${season}/segments/0/leagues/319300?view=mTeam`
     );
     const teamMap = {};
     const teams = rsp.data.teams;
@@ -60,11 +60,11 @@ function enterScores(scores, scheduleEntry, teamMap, liveFlag) {
 }
 
 
-async function getTopScorers(wk) {
-  const teamMap = await getTeams();
+async function getTopScorers(season, wk) {
+  const teamMap = await getTeams(season);
   try {
     const rsp = await axios.get(
-      'https://fantasy.espn.com/apis/v3/games/ffl/seasons/2020/segments/0/leagues/319300?view=mMatchupScore'
+      `https://fantasy.espn.com/apis/v3/games/ffl/seasons/${season}/segments/0/leagues/319300?view=mMatchupScore`
     );
     const schedule = rsp.data.schedule;
 
@@ -126,14 +126,14 @@ function compareRecords(a, b) {
   return 0;
 }
 
-async function getCurrentStandings() {
-  const teamMap = await getTeams();
+async function getCurrentStandings(season) {
+  const teamMap = await getTeams(season);
   try {
     // 1. for each week up to scoringPeriodId, compute pts winners and losers. add them to teamMap
     // 2. sum pts W/L with h2h W/L
     // 3. sort
     const rsp = await axios.get(
-      'https://fantasy.espn.com/apis/v3/games/ffl/seasons/2020/segments/0/leagues/319300?view=mMatchupScore'
+      `https://fantasy.espn.com/apis/v3/games/ffl/seasons/${season}/segments/0/leagues/319300?view=mMatchupScore`
     );
     const currentWeek = rsp.data.scoringPeriodId;
     const regSeasonCutoffWeek = 14;
@@ -148,7 +148,7 @@ async function getCurrentStandings() {
       };
     }
     for (var i = 1; i < Math.min(regSeasonCutoffWeek, currentWeek); i++) {
-      var weeklyScores = await getTopScorers(i);
+      var weeklyScores = await getTopScorers(season, i);
       for (var j = 0; j < Object.keys(weeklyScores).length; j++) {
         if (j < winnerCutoff) {
           ptsRecordMap[weeklyScores[j].id].ptswins += 1;
@@ -195,12 +195,12 @@ function convertToCSV(jsonData) {
   return csvData;
 }
 
-async function getCurrentWeek() {
+async function getCurrentWeek(season) {
   const rsp = await axios.get(
-    'https://fantasy.espn.com/apis/v3/games/ffl/seasons/2020/segments/0/leagues/319300'
+    `https://fantasy.espn.com/apis/v3/games/ffl/seasons/${season}/segments/0/leagues/319300`
   );
   const currentWeek = rsp.data.scoringPeriodId;
-  const maxWeek = 16;
+  const maxWeek = rsp.data.status.currentMatchupPeriod;
   res = {
     week: currentWeek,
     maxWeek: maxWeek

@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import { Spinner } from '@blueprintjs/core';
 
 class LeagueStandings extends React.Component {
   constructor(props) {
@@ -13,8 +14,14 @@ class LeagueStandings extends React.Component {
     this.getStandings();
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.season !== this.props.season) {
+      this.getStandings();
+    }
+  }
+
   getStandings = async () => {
-    const standings = await axios.get('/api/standings');
+    const standings = await axios.get(`/api/${this.props.season}/standings`);
     this.setState({ standingList: standings.data });
   };
 
@@ -42,9 +49,16 @@ class LeagueStandings extends React.Component {
               );
             })
           ) : (
-            <tr>
-              <td colSpan="4">Loading...</td>
-            </tr>
+            <>
+              <tr>
+                <td colSpan="4" >
+                  <Spinner />
+                </td>
+              </tr>
+              <tr>
+                <td colSpan="4" style={{ textAlign: "center" }}>Loading...</td>
+              </tr>
+            </>
           )}
         </tbody>
       </table>

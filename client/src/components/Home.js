@@ -12,13 +12,19 @@ class Home extends React.Component {
       maxWeek: 0
     }
   }
-  
+
   componentDidMount() {
     this.getWeek();
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.season !== this.props.season) {
+      this.getWeek();
+    }
+  }
+
   getWeek = async () => {
-    const res = await axios.get('/api/currentweek/');
+    const res = await axios.get(`/api/${this.props.season}/currentweek/`);
     let selectedWeek = res.data.week;
     let maxWeek = res.data.maxWeek;
 
@@ -34,13 +40,12 @@ class Home extends React.Component {
   }
 
   render() {
-    const weekList = Array.from({length: this.state.maxWeek}, (_, i) => i + 1);
-    console.log(weekList);
+    const weekList = Array.from({ length: this.state.maxWeek }, (_, i) => i + 1);
 
     const weekMenu = (
       <Menu>
-        {weekList.map((name, index) => {
-          return <MenuItem key={name} text={`Week ${name}`} onClick={() => {this.handleClick(name)}}/>;
+        {weekList.map((name) => {
+          return <MenuItem key={name} text={`Week ${name}`} onClick={() => { this.handleClick(name) }} />;
         })}
       </Menu>
     )
@@ -48,22 +53,22 @@ class Home extends React.Component {
     return (
       <div>
         <div className="page-header">
-          <H1>The Batch 2020</H1>
+          <H1>The Batch {this.props.season}</H1>
           <H4>Fantasy Football Dashboard</H4>
-          <Popover content={weekMenu} position={Position.TOP} modifiers={{preventOverflow:{enabled: true}}}>
-              <Button text={`Week  ${this.state.selectedWeek}`} icon="calendar" />
+          <Popover content={weekMenu} position={Position.TOP} modifiers={{ preventOverflow: { enabled: true } }}>
+            <Button text={`Week  ${this.state.selectedWeek}`} icon="calendar" />
           </Popover>
         </div>
         <div className="scoreboard-container">
           <div className="table-container">
             <H3>Weekly Top Scorers</H3>
             <i>Updates every 10s</i>
-            <WeeklyScorersTable week={this.state.selectedWeek} scoresList={[]}/>
+            <WeeklyScorersTable week={this.state.selectedWeek} scoresList={[]} season={this.props.season} />
           </div>
           <div className="table-container">
             <H3>Regular Season Standings</H3>
             <i>Updates after each week</i>
-            <LeagueStandings />
+            <LeagueStandings season={this.props.season} />
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import { Spinner } from '@blueprintjs/core';
 
 class WeeklyScorersTable extends React.Component {
   constructor(props) {
@@ -20,9 +21,10 @@ class WeeklyScorersTable extends React.Component {
   }
 
   getScores = async (wk) => {
-    const scores = await axios.get('/api/topscorers/' + wk);
+    const scores = await axios.get(`/api/${this.props.season}/topscorers/${wk}`);
     const scoresList = Object.values(scores.data);
     this.setState({ scoresList: scoresList });
+    console.log(this.props.season);
   };
 
   componentDidUpdate(prevProps) {
@@ -51,9 +53,16 @@ class WeeklyScorersTable extends React.Component {
               );
             })
           ) : (
-            <tr>
-              <td colSpan="2">Loading...</td>
-            </tr>
+            <>
+              <tr>
+                <td colSpan="2" >
+                  <Spinner />
+                </td>
+              </tr>
+              <tr>
+                <td colSpan="2" style={{ textAlign: "center" }}>Loading...</td>
+              </tr>
+            </>
           )}
         </tbody>
       </table>
