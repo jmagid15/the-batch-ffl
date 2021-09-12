@@ -103,8 +103,8 @@ async function getTopScorers(season, wk) {
 }
 
 function comparePoints(a, b) {
-  if (parseInt(b['points']) > parseInt(a['points'])) return 1;
-  if (parseInt(a['points']) > parseInt(b['points'])) return -1;
+  if (parseFloat(b['points']) > parseFloat(a['points'])) return 1;
+  if (parseFloat(a['points']) > parseFloat(b['points'])) return -1;
 
   return 0;
 }
