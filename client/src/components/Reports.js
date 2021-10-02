@@ -1,29 +1,36 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
-
 import author from '../images/author.png';
-import { PorchV1, PorchV2 } from '../reports';
+import * as Vols from '../reports';
 import { H5, Tabs, Tab } from '@blueprintjs/core';
 
+const VOLUMES = {
+  2020: {
+    1: Vols.Porch2020v1,
+    2: Vols.Porch2020v2,
+  },
+  2021: {
+    1: Vols.Porch2021v1,
+  }
+}
+
 class Reports extends React.Component {
-  state = {
-    markdown: '',
-    mostRecentReport: 2,
-    volumes: {
-      1: PorchV1,
-      2: PorchV2,
-    },
-    windowDimensions: {
-      width: window.innerWidth,
-      height: window.innerHeight,
-    },
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      markdown: '',
+      mostRecentReport: Object.keys(VOLUMES[this.props.season]).length,
+      volumes: VOLUMES[this.props.season],
+      windowDimensions: {
+        width: window.innerWidth,
+        height: window.innerHeight,
+      },
+    };
+  }
 
   componentDidMount() {
-    // Get the contents from the Markdown file and put them in the React state, so we can reference it in render() below.
-    fetch(this.state.volumes[this.state.mostRecentReport])
-      .then((res) => res.text())
-      .then((text) => this.setState({ markdown: text }));
+    this.getMarkdown(this.state.mostRecentReport);
+    this.setState({ selectedTab: this.state.mostRecentReport });
     // Detect when window has been resized
     window.addEventListener('resize', this.updateWindowDimensions);
   }
@@ -32,10 +39,29 @@ class Reports extends React.Component {
     window.removeEventListener('resize', this.updateWindowDimensions);
   }
 
-  handleTabChange = (newTabId, prevTabId) => {
-    fetch(this.state.volumes[newTabId])
+  componentDidUpdate(prevProps) {
+    if (prevProps.season !== this.props.season) {
+      let maxVol = Object.keys(VOLUMES[this.props.season]).length;
+      this.setState({
+        mostRecentReport: maxVol,
+        selectedTab: maxVol,
+        volumes: VOLUMES[this.props.season],
+      }, () => {
+        this.getMarkdown(this.state.mostRecentReport);
+      });
+    }
+  }
+
+  getMarkdown(idx) {
+    // Get the contents from the Markdown file and put them in the React state, so we can reference it in render() below.
+    fetch(this.state.volumes[idx])
       .then((res) => res.text())
       .then((text) => this.setState({ markdown: text }));
+  }
+
+  handleTabChange = (newTabId, _prevTabId) => {
+    this.getMarkdown(newTabId);
+    this.setState({ selectedTab: newTabId });
   };
 
   updateWindowDimensions = () => {
@@ -46,22 +72,25 @@ class Reports extends React.Component {
         height: window.innerHeight,
       },
     });
-    console.log(this.state.windowDimensions);
   };
 
   render() {
     return (
       <div className="report-view">
         <div className="report-nav">
+          <h2>{`${this.props.season} Edition`}</h2>
           <div className="tabs-container">
             <Tabs
               id="vol-tabs"
               vertical={this.state.windowDimensions.width > 620}
-              defaultSelectedTabId={this.state.mostRecentReport}
+              selectedTabId={this.state.selectedTab}
               onChange={this.handleTabChange}
             >
-              <Tab id="1" title="Volume 1" className="tab-item" />
-              <Tab id="2" title="Volume 2" className="tab-item" />
+              {Object.keys(this.state.volumes).map((k, _i) => {
+                return (
+                  <Tab id={k} key={k} title={`Volume ${k}`} className="tab-item" />
+                )
+              })}
             </Tabs>
           </div>
           <h2>About the author</h2>

@@ -24,7 +24,6 @@ class WeeklyScorersTable extends React.Component {
     const scores = await axios.get(`/api/${this.props.season}/topscorers/${wk}`);
     const scoresList = Object.values(scores.data);
     this.setState({ scoresList: scoresList });
-    console.log(this.props.season);
   };
 
   componentDidUpdate(prevProps) {

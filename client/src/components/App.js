@@ -53,7 +53,7 @@ class App extends React.Component {
               <Home season={this.state.selectedSeason} />
             </Route>
             <Route path="/reports">
-              <Reports />
+              <Reports season={this.state.selectedSeason}/>
             </Route>
           </Switch>
         </div>
