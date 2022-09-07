@@ -11,6 +11,9 @@ const VOLUMES = {
   },
   2021: {
     1: Vols.Porch2021v1,
+  },
+  2022: {
+    1: Vols.Porch2022v1,
   }
 }
 
