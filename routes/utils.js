@@ -10,7 +10,7 @@ async function getTeams(season) {
     const teams = rsp.data.teams;
     for (i in teams) {
       teamMap[teams[i].id] = {
-        name: teams[i].location + ' ' + teams[i].nickname,
+        name: teams[i].name,
         h2hwins: teams[i].record.overall.wins,
         h2hlosses: teams[i].record.overall.losses,
         seasonPoints: teams[i].record.overall.pointsFor.toFixed(2),
