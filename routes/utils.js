@@ -11,8 +11,9 @@ async function getTeams(season) {
     for (i in teams) {
       teamMap[teams[i].id] = {
         name: teams[i].name,
-        h2hwins: teams[i].record.overall.wins,
-        h2hlosses: teams[i].record.overall.losses,
+        // Using division since overall combines bonus wins if that's enabled
+        h2hwins: teams[i].record.division.wins,
+        h2hlosses: teams[i].record.division.losses,
         seasonPoints: teams[i].record.overall.pointsFor.toFixed(2),
       };
     }
@@ -111,18 +112,23 @@ function comparePoints(a, b) {
 
 function compareRecords(a, b) {
   if (
-    b['totalWins'] * 3 + b['totalLosses'] * -1 >
-    a['totalWins'] * 3 + a['totalLosses'] * -1
-  )
+    b['totalWins'] * 10 + b['totalLosses'] * 1 >
+    a['totalWins'] * 10 + a['totalLosses'] * 1
+  ) {
     return 1;
+  }
   if (
-    a['totalWins'] * 3 + a['totalLosses'] * -1 >
-    b['totalWins'] * 3 + b['totalLosses'] * -1
-  )
+    a['totalWins'] * 10 + a['totalLosses'] * 1 >
+    b['totalWins'] * 10 + b['totalLosses'] * 1
+  ) {
     return -1;
-
-  if (b['seasonPoints'] > a['seasonPoints']) return 1;
-  if (a['seasonPoints'] > b['seasonPoints']) return -1;
+  }
+  if (parseFloat(b['seasonPoints']) > parseFloat(a['seasonPoints'])) {
+    return 1;
+  }
+  if (parseFloat(a['seasonPoints']) > parseFloat(b['seasonPoints'])) {
+    return -1;
+  }
   return 0;
 }
 
@@ -185,6 +191,7 @@ async function getCurrentStandings(season) {
       sortedRecordArray.push(teamStandings[i]);
     }
     sortedRecordArray.sort(compareRecords);
+    console.log(sortedRecordArray);
 
     return sortedRecordArray;
   } catch (err) {
