@@ -191,7 +191,6 @@ async function getCurrentStandings(season) {
       sortedRecordArray.push(teamStandings[i]);
     }
     sortedRecordArray.sort(compareRecords);
-    console.log(sortedRecordArray);
 
     return sortedRecordArray;
   } catch (err) {
