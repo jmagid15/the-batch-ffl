@@ -1,10 +1,12 @@
 const axios = require('axios');
 const express = require('express');
 
+const ESPN_API_BASE = "https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/"
+
 async function getTeams(season) {
   try {
     const rsp = await axios.get(
-      `https://fantasy.espn.com/apis/v3/games/ffl/seasons/${season}/segments/0/leagues/319300?view=mTeam`
+      ESPN_API_BASE + `${season}/segments/0/leagues/319300?view=mTeam`
     );
     const teamMap = {};
     const teams = rsp.data.teams;
@@ -65,7 +67,7 @@ async function getTopScorers(season, wk) {
   const teamMap = await getTeams(season);
   try {
     const rsp = await axios.get(
-      `https://fantasy.espn.com/apis/v3/games/ffl/seasons/${season}/segments/0/leagues/319300?view=mMatchupScore`
+      ESPN_API_BASE + `${season}/segments/0/leagues/319300?view=mMatchupScore`
     );
     const schedule = rsp.data.schedule;
 
@@ -139,7 +141,7 @@ async function getCurrentStandings(season) {
     // 2. sum pts W/L with h2h W/L
     // 3. sort
     const rsp = await axios.get(
-      `https://fantasy.espn.com/apis/v3/games/ffl/seasons/${season}/segments/0/leagues/319300?view=mMatchupScore`
+      ESPN_API_BASE + `${season}/segments/0/leagues/319300?view=mMatchupScore`
     );
     const currentWeek = rsp.data.scoringPeriodId;
     const schedule = rsp.data.schedule;
@@ -212,7 +214,7 @@ function convertToCSV(jsonData) {
 
 async function getCurrentWeek(season) {
   const rsp = await axios.get(
-    `https://fantasy.espn.com/apis/v3/games/ffl/seasons/${season}/segments/0/leagues/319300`
+    ESPN_API_BASE + `${season}/segments/0/leagues/319300`
   );
   const currentWeek = rsp.data.scoringPeriodId;
   const maxWeek = rsp.data.status.currentMatchupPeriod;
