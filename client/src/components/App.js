@@ -5,6 +5,7 @@ import Reports from './Reports';
 import { Navbar, Alignment, Button, Popover, Menu, MenuItem, Position } from '@blueprintjs/core';
 
 const SEASONS = [
+  2026,
   2025,
   2024,
   2023,

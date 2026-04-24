@@ -24,6 +24,9 @@ const VOLUMES = {
   2025: {
     1: Vols.Porch2025v1,
   },
+  2026: {
+    1: Vols.Porch2026v1,
+  },
 }
 
 class Reports extends React.Component {
